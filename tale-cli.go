@@ -141,6 +141,7 @@ func doUpgrade(ctx *cli.Context) {
 	fmt.Println("开始下载最新版tale安装包, 客官请稍等...")
 	os.Remove(taleZipName)
 	//// 下载tale.zip
+
 	DownloadFile(taleDownloadUrl, "./")
 	Unzip(taleZipName, "./")
 	fmt.Println(" 正在升级...")
@@ -166,6 +167,7 @@ func doUpgrade(ctx *cli.Context) {
 	os.Rename("./tale/resources/templates/install.html", "./resources/templates/install.html")
 
 	RemoveContents("tale")
+	os.Remove("tale")
 
 	fmt.Println("Tale 升级成功, 请手动启动.")
 
