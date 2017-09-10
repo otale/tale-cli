@@ -81,7 +81,7 @@ func doStart(ctx *cli.Context) {
 		fmt.Println("Tale 已经启动.")
 	} else {
 		jarFileName := findJarFileName("./")
-		cmd := exec.Command("java", "-jar", jarFileName, "&")
+		cmd := exec.Command("java", "-jar", "-Xms128m", "-Xmx128m", jarFileName, "&")
 		cmd.Dir = "."
 		// 重定向标准输出到文件
 		stdout, err := os.OpenFile("tale.log", os.O_CREATE|os.O_WRONLY, 0600)
