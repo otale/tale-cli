@@ -4,7 +4,12 @@ tale命令行帮助程序
 
 ## 使用
 
-[点击下载](http://7xls9k.dl1.z0.glb.clouddn.com/tale-cli.zip) 命令行程序到存储在 tale 根目录下。
+**该版本只支持 linux_64位**
+
+```bash
+cd tale
+wget http://7xls9k.dl1.z0.glb.clouddn.com/tale-cli
+```
 
 **操作指令**
 
