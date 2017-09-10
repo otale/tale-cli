@@ -8,6 +8,13 @@ import (
 	"log"
 	"strings"
 	"strconv"
+	"io/ioutil"
+	"time"
+)
+
+const (
+	taleZipName     = "tale-least.zip"
+	taleDownloadUrl = "http://7xls9k.dl1.z0.glb.clouddn.com/" + taleZipName
 )
 
 func main() {
@@ -58,23 +65,24 @@ func main() {
 			},
 		},
 		{
-			Name:  "upgrade",
-			Usage: "升级当前的tale版本",
-			Action: func(ctx *cli.Context) {
-
-			},
+			Name:   "upgrade",
+			Usage:  "升级当前的tale版本",
+			Action: doUpgrade,
 		},
 	}
 	app.Run(os.Args)
 	os.Exit(0)
 }
 
+// start tale instance
 func doStart(ctx *cli.Context) {
 	pid := findPid()
 	if pid > 0 {
 		fmt.Println("Tale 已经启动.")
 	} else {
-		cmd := exec.Command("java", "-jar", "tale-1.3.0-alpha1.jar", "&")
+		jarFileName := findJarFileName("./")
+		cmd := exec.Command("java", "-jar", jarFileName, "&")
+		cmd.Dir = "."
 		// 重定向标准输出到文件
 		stdout, err := os.OpenFile("tale.log", os.O_CREATE|os.O_WRONLY, 0600)
 		if err != nil {
@@ -86,10 +94,11 @@ func doStart(ctx *cli.Context) {
 		if err := cmd.Start(); err != nil {
 			log.Fatalln(err)
 		}
-		fmt.Println("Tale 启动成功, 可以使用 tale log 命令查看日志.")
+		fmt.Println("Tale 启动成功, 可以使用 ./tale-cli log 命令查看日志.")
 	}
 }
 
+// stop tale instance
 func doStop(ctx *cli.Context) {
 	pid := findPid()
 	if pid > 0 {
@@ -103,16 +112,7 @@ func doStop(ctx *cli.Context) {
 	}
 }
 
-//func findPid() int {
-//	pidByte, _ := ioutil.ReadFile("resources/tale.pid")
-//	if len(pidByte) == 0 {
-//		return -1
-//	}
-//	pid := strings.TrimSuffix(string(pidByte), "\n")
-//	intVal, _ := strconv.Atoi(pid)
-//	return intVal
-//}
-
+// tail -f tale.log
 func tailLog() {
 	cmd := exec.Command("tail", "-f", "tale.log")
 	cmd.Stdout = os.Stdout
@@ -124,8 +124,54 @@ func tailLog() {
 	}
 }
 
+// 升级tale版本
+func doUpgrade(ctx *cli.Context) {
+	dir, err := os.Open("./resources")
+	if err != nil {
+		log.Fatal(err)
+	}
+	var files = []*os.File{dir}
+	dest := "tale_backup_" + time.Now().Format("20060102150405") + ".zip"
+	err = Compress(files, dest)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	fmt.Println("备份成功.")
+	fmt.Println("开始下载最新版tale安装包, 客官请稍等...")
+	os.Remove(taleZipName)
+	//// 下载tale.zip
+	DownloadFile(taleDownloadUrl, "./")
+	Unzip(taleZipName, "./")
+	fmt.Println(" 正在升级...")
+	// delete 除了 resources 目录下的所有
+	// cd resources && delete 除了 app.properties、static、
+	// templates/admin、templates/install.html、templates/comm
+	RemoveContents("lib")
+	os.Rename("./tale/lib", "./lib")
+	jarFileName := findJarFileName("./")
+	os.Remove(jarFileName)
+	newJarFileName := findJarFileName("./tale")
+	os.Rename("./tale/"+newJarFileName, "./"+newJarFileName)
+	RemoveContents("./resources/static")
+	os.Rename("./tale/resources/static", "./resources/static")
+
+	RemoveContents("./resources/templates/admin")
+	os.Rename("./tale/resources/templates/admin", "./resources/templates/admin")
+
+	RemoveContents("./resources/templates/comm")
+	os.Rename("./tale/resources/templates/comm", "./resources/templates/comm")
+
+	os.Remove("./resources/templates/install.html")
+	os.Rename("./tale/resources/templates/install.html", "./resources/templates/install.html")
+	fmt.Println("Tale 升级成功, 请手动启动.")
+	RemoveContents("tale")
+}
+
+// find tale-xxx.jar process id
 func findPid() int {
-	pidByte, err := exec.Command("/bin/sh", "-c", `ps -eaf|grep "tale-1.3.0-alpha1.jar"|grep -v "grep"|awk '{print $2}'`).Output()
+	jarFileName := findJarFileName("./")
+	pidByte, err := exec.Command("/bin/sh", "-c", `ps -eaf|grep "`+jarFileName+`"|grep -v "grep"|awk '{print $2}'`).Output()
 	if err != nil {
 		log.Fatal(err)
 		return -1
@@ -140,4 +186,18 @@ func findPid() int {
 	}
 	intVal, _ := strconv.Atoi(pid)
 	return intVal
+}
+
+// find tale-xxx.jar file name
+func findJarFileName(dir string) string {
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, f := range files {
+		if strings.HasPrefix(f.Name(), "tale") && strings.HasSuffix(f.Name(), ".jar") {
+			return f.Name()
+		}
+	}
+	return ""
 }
