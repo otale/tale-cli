@@ -2,6 +2,10 @@
 
 tale命令行帮助程序
 
+## 预览
+
+[![tale-cli](https://i.loli.net/2017/09/10/59b5241331c47.png)](https://asciinema.org/a/137041)
+
 ## 使用
 
 **该版本只支持 linux_64位**
