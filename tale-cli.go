@@ -164,8 +164,11 @@ func doUpgrade(ctx *cli.Context) {
 
 	os.Remove("./resources/templates/install.html")
 	os.Rename("./tale/resources/templates/install.html", "./resources/templates/install.html")
-	fmt.Println("Tale 升级成功, 请手动启动.")
+
 	RemoveContents("tale")
+
+	fmt.Println("Tale 升级成功, 请手动启动.")
+
 }
 
 // find tale-xxx.jar process id
