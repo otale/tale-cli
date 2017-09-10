@@ -20,3 +20,5 @@ wget http://7xls9k.dl1.z0.glb.clouddn.com/tale-cli
 ./tale-cli status: 查看当前tale状态
 ./tale-cli upgrade: 升级tale版本，会自动帮你备份
 ```
+
+> 备份的文件在当前目录下形如 `tale_backup_201709109281.zip`
