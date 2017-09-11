@@ -1,0 +1,15 @@
+language: go
+
+go:
+    - 1.8.3
+
+sudo: false
+
+install:
+    - go get github.com/otale/tale-cli
+
+script:
+    - GOOS=darwin go build
+    - GOOS=windows go build
+    - GOOS=linux go build
+    - $HOME/gopath/bin/tale-cli -service=travis-ci
