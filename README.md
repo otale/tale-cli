@@ -1,14 +1,17 @@
 # tale-cli
 
-tale命令行帮助程序
+tale命令行帮助程序 🌟
 
-[![License](http://img.shields.io/badge/license-Apache2-blue.svg)](https://raw.githubusercontent.com/otale/tale-cli/master/LICENSE) [![Travis branch](https://img.shields.io/travis/otale/tale-cli/master.svg)](https://travis-ci.org/otale/tale-cli) [![Go Report Card](https://goreportcard.com/badge/github.com/otale/tale-cli)](https://goreportcard.com/report/github.com/otale/tale-cli) [![GoDoc](https://godoc.org/github.com/otale/tale-cli?status.svg)](https://godoc.org/github.com/otale/tale-cli)
+[![License](http://img.shields.io/badge/license-Apache2-blue.svg)](https://raw.githubusercontent.com/otale/tale-cli/master/LICENSE)
+[![Travis branch](https://img.shields.io/travis/otale/tale-cli/master.svg)](https://travis-ci.org/otale/tale-cli)
+[![Go Report Card](https://goreportcard.com/badge/github.com/otale/tale-cli)](https://goreportcard.com/report/github.com/otale/tale-cli)
+[![GoDoc](https://godoc.org/github.com/otale/tale-cli?status.svg)](https://godoc.org/github.com/otale/tale-cli)
 
 ## 预览
 
 [![tale-cli](https://i.loli.net/2017/09/10/59b5241331c47.png)](https://asciinema.org/a/137112)
 
-## 使用
+## 安装
 
 **mac系统**
 
@@ -16,7 +19,7 @@ tale命令行帮助程序
 brew tap otale/tap && brew install tale-cli
 ```
 
-**该版本只支持 linux_64位**
+**linux_64位**
 
 ```bash
 cd tale
@@ -24,9 +27,11 @@ wget http://7xls9k.dl1.z0.glb.clouddn.com/tale-cli
 chmod +x tale-cli
 ```
 
-**帮助**
+## 帮助
 
 ```bash
+# tale-cli
+
 NAME:
    tale - tale的命令行帮助程序
 
@@ -53,7 +58,7 @@ GLOBAL OPTIONS:
    --version, -v  print the version
 ```
 
-**操作指令**
+## 操作指令
 
 ```bash
 ./tale-cli start  : 启动tale
@@ -65,3 +70,4 @@ GLOBAL OPTIONS:
 ```
 
 > 备份的文件在当前目录下形如 `tale_backup_201709109281.zip`
+
