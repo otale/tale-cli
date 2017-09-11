@@ -2,9 +2,11 @@
 
 tale命令行帮助程序
 
+[![License](http://img.shields.io/badge/license-Apache2-blue.svg?style=flat-square)](https://raw.githubusercontent.com/otale/tale-cli/master/LICENSE) [![Travis branch](https://img.shields.io/travis/otale/tale-cli/master.svg)](https://travis-ci.org/otale/tale-cli) [![Coverage Status](https://coveralls.io/repos/github/otale/tale-cli/badge.svg?branch=master)](https://coveralls.io/github/otale/tale-cli?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/otale/tale-cli)](https://goreportcard.com/report/github.com/otale/tale-cli) [![GoDoc](https://godoc.org/github.com/otale/tale-cli?status.svg)](https://godoc.org/github.com/otale/tale-cli)
+
 ## 预览
 
-[![tale-cli](https://i.loli.net/2017/09/10/59b5241331c47.png)](https://asciinema.org/a/137041)
+[![tale-cli](https://i.loli.net/2017/09/10/59b5241331c47.png)](https://asciinema.org/a/137111)
 
 ## 使用
 
