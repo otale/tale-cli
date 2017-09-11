@@ -2,7 +2,7 @@
 
 tale命令行帮助程序
 
-[![License](http://img.shields.io/badge/license-Apache2-blue.svg?style=flat-square)](https://raw.githubusercontent.com/otale/tale-cli/master/LICENSE) [![Travis branch](https://img.shields.io/travis/otale/tale-cli/master.svg)](https://travis-ci.org/otale/tale-cli) [![Coverage Status](https://coveralls.io/repos/github/otale/tale-cli/badge.svg?branch=master)](https://coveralls.io/github/otale/tale-cli?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/otale/tale-cli)](https://goreportcard.com/report/github.com/otale/tale-cli) [![GoDoc](https://godoc.org/github.com/otale/tale-cli?status.svg)](https://godoc.org/github.com/otale/tale-cli)
+[![License](http://img.shields.io/badge/license-Apache2-blue.svg?style=flat-square)](https://raw.githubusercontent.com/otale/tale-cli/master/LICENSE) [![Travis branch](https://img.shields.io/travis/otale/tale-cli/master.svg)](https://travis-ci.org/otale/tale-cli) [![Go Report Card](https://goreportcard.com/badge/github.com/otale/tale-cli)](https://goreportcard.com/report/github.com/otale/tale-cli) [![GoDoc](https://godoc.org/github.com/otale/tale-cli?status.svg)](https://godoc.org/github.com/otale/tale-cli)
 
 ## 预览
 
