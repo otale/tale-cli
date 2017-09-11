@@ -10,6 +10,12 @@ tale命令行帮助程序
 
 ## 使用
 
+**mac系统**
+
+```bash
+brew tap otale/tap && brew install tale-cli
+```
+
 **该版本只支持 linux_64位**
 
 ```bash
