@@ -39,7 +39,7 @@ USAGE:
    tale-cli [global options] command [command options] [arguments...]
 
 VERSION:
-   0.0.1
+   0.0.2
 
 AUTHOR:
    https://github.com/biezhi <biezhi.me@gmail.com>

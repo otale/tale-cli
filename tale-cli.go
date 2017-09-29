@@ -8,13 +8,13 @@ import (
 	"log"
 	"strings"
 	"strconv"
-	"io/ioutil"
 	"time"
 )
 
 const (
 	taleZipName     = "tale-least.zip"
 	taleDownloadUrl = "http://7xls9k.dl1.z0.glb.clouddn.com/" + taleZipName
+	jarFileName     = "tale.jar"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 	app.Usage = "tale的命令行帮助程序"
 	app.Author = "https://github.com/biezhi"
 	app.Email = "biezhi.me@gmail.com"
-	app.Version = "0.0.1"
+	app.Version = "0.0.2"
 
 	app.Commands = []cli.Command{
 		{
@@ -80,7 +80,6 @@ func doStart(ctx *cli.Context) {
 	if pid > 0 {
 		fmt.Println("Tale 已经启动.")
 	} else {
-		jarFileName := findJarFileName("./")
 		// `nohup java -Xms128m -Xmx128m -Dfile.encoding=UTF-8 -jar tale-1.3.0-alpha1.jar >tale.log &`
 		cmd := exec.Command("/bin/sh", "-c", `nohup java -Xms128m -Xmx128m -Dfile.encoding=UTF-8 -jar `+jarFileName+` >tale.log &`)
 		cmd.Dir = "."
@@ -151,10 +150,10 @@ func doUpgrade(ctx *cli.Context) {
 	// templates/admin、templates/install.html、templates/comm
 	RemoveContents("lib")
 	os.Rename("./tale/lib", "./lib")
-	jarFileName := findJarFileName("./")
+	jarFileName := ""
 	os.Remove(jarFileName)
-	newJarFileName := findJarFileName("./tale")
-	os.Rename("./tale/"+newJarFileName, "./"+newJarFileName)
+
+	os.Rename("./tale/" + jarFileName, "./" + jarFileName)
 	RemoveContents("./resources/static")
 	os.Rename("./tale/resources/static", "./resources/static")
 
@@ -174,16 +173,16 @@ func doUpgrade(ctx *cli.Context) {
 
 }
 
-// find tale-xxx.jar process id
+// find tale.jar process id
 func findPid() int {
-	jarFileName := findJarFileName("./")
+	jarFileName := "tale.jar"
 	pidByte, err := exec.Command("/bin/sh", "-c", `ps -eaf|grep "`+jarFileName+`"|grep -v "grep"|awk '{print $2}'`).Output()
 	if err != nil {
 		log.Fatal(err)
 		return -1
 	}
 	if len(pidByte) == 0 {
-		return -1;
+		return -1
 	}
 	pid := string(pidByte)
 	pid = strings.TrimSuffix(string(pidByte), "\n")
@@ -192,18 +191,4 @@ func findPid() int {
 	}
 	intVal, _ := strconv.Atoi(pid)
 	return intVal
-}
-
-// find tale-xxx.jar file name
-func findJarFileName(dir string) string {
-	files, err := ioutil.ReadDir(dir)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, f := range files {
-		if strings.HasPrefix(f.Name(), "tale") && strings.HasSuffix(f.Name(), ".jar") {
-			return f.Name()
-		}
-	}
-	return ""
 }
