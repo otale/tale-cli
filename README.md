@@ -17,8 +17,8 @@ tale命令行帮助程序 🌟
 
 ```bash
 cd tale
-wget http://7xls9k.dl1.z0.glb.clouddn.com/tale-cli?t=rand
-mv tale-cli?t=rand tale-cli && chmod +x tale-cli
+wget http://static.biezhi.me/tale-cli
+chmod +x tale-cli
 ```
 
 ## 帮助

@@ -13,7 +13,7 @@ import (
 
 const (
 	taleZipName     = "tale-least.zip"
-	taleDownloadUrl = "http://7xls9k.dl1.z0.glb.clouddn.com/" + taleZipName
+	taleDownloadUrl = "http://static.biezhi.me/" + taleZipName
 	jarFileName     = "tale-least.jar"
 )
 
