@@ -14,7 +14,7 @@ import (
 const (
 	taleZipName     = "tale-least.zip"
 	taleDownloadUrl = "http://7xls9k.dl1.z0.glb.clouddn.com/" + taleZipName
-	jarFileName     = "tale.jar"
+	jarFileName     = "tale-least.jar"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 	app.Usage = "tale的命令行帮助程序"
 	app.Author = "https://github.com/biezhi"
 	app.Email = "biezhi.me@gmail.com"
-	app.Version = "0.0.2"
+	app.Version = "0.0.3"
 
 	app.Commands = []cli.Command{
 		{
@@ -142,18 +142,23 @@ func doUpgrade(ctx *cli.Context) {
 	os.Remove(taleZipName)
 	//// 下载tale.zip
 
-	DownloadFile(taleDownloadUrl, "./")
-	Unzip(taleZipName, "./")
-	fmt.Println(" 正在升级...")
+	rand := "?t=_" + time.Now().Format("20060102150405")
+	DownloadFile(taleDownloadUrl+rand, "./")
+
+	Unzip(taleZipName+rand, "./")
+	fmt.Println("解压完成")
+	fmt.Println("正在升级...")
+
 	// delete 除了 resources 目录下的所有
 	// cd resources && delete 除了 app.properties、static、
 	// templates/admin、templates/install.html、templates/comm
 	RemoveContents("lib")
+
 	os.Rename("./tale/lib", "./lib")
-	jarFileName := ""
 	os.Remove(jarFileName)
 
-	os.Rename("./tale/" + jarFileName, "./" + jarFileName)
+	os.Rename("./tale/"+jarFileName, "./"+jarFileName)
+
 	RemoveContents("./resources/static")
 	os.Rename("./tale/resources/static", "./resources/static")
 

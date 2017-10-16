@@ -13,18 +13,12 @@ tale命令行帮助程序 🌟
 
 ## 安装
 
-**mac系统**
-
-```bash
-brew install tale-cli
-```
-
 **linux_64位**
 
 ```bash
 cd tale
-wget http://7xls9k.dl1.z0.glb.clouddn.com/tale-cli
-chmod +x tale-cli
+wget http://7xls9k.dl1.z0.glb.clouddn.com/tale-cli?t=rand
+mv tale-cli?t=rand tale-cli && chmod +x tale-cli
 ```
 
 ## 帮助
