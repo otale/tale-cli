@@ -24,7 +24,7 @@ func main() {
 	app.Usage = "tale的命令行帮助程序"
 	app.Author = "https://github.com/biezhi"
 	app.Email = "biezhi.me@gmail.com"
-	app.Version = "0.0.3"
+	app.Version = "0.0.4"
 
 	app.Commands = []cli.Command{
 		{
@@ -180,7 +180,6 @@ func doUpgrade(ctx *cli.Context) {
 
 // find tale.jar process id
 func findPid() int {
-	jarFileName := "tale.jar"
 	pidByte, err := exec.Command("/bin/sh", "-c", `ps -eaf|grep "`+jarFileName+`"|grep -v "grep"|awk '{print $2}'`).Output()
 	if err != nil {
 		log.Fatal(err)
