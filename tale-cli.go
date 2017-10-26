@@ -80,16 +80,8 @@ func doStart(ctx *cli.Context) {
 	if pid > 0 {
 		fmt.Println("Tale 已经启动.")
 	} else {
-		// `nohup java -Xms128m -Xmx128m -Dfile.encoding=UTF-8 -jar tale-1.3.0-alpha1.jar >tale.log &`
+		// `nohup java -Xms128m -Xmx128m -Dfile.encoding=UTF-8 -jar tale-1.3.0-alpha1.jar >/dev/null &`
 		cmd := exec.Command("/bin/sh", "-c", `nohup java -Xms128m -Xmx128m -Dfile.encoding=UTF-8 -jar `+jarFileName+` >/dev/null &`)
-		cmd.Dir = "."
-		// 重定向标准输出到文件
-		stdout, err := os.OpenFile("tale.log", os.O_CREATE|os.O_WRONLY, 0600)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		defer stdout.Close()
-		cmd.Stdout = stdout
 		// 执行命令
 		if err := cmd.Start(); err != nil {
 			log.Fatalln(err)
