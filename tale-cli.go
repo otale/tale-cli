@@ -24,7 +24,7 @@ func main() {
 	app.Usage = "tale的命令行帮助程序"
 	app.Author = "https://github.com/biezhi"
 	app.Email = "biezhi.me@gmail.com"
-	app.Version = "0.0.4"
+	app.Version = "0.0.5"
 
 	app.Commands = []cli.Command{
 		{
@@ -81,7 +81,7 @@ func doStart(ctx *cli.Context) {
 		fmt.Println("Tale 已经启动.")
 	} else {
 		// `nohup java -Xms128m -Xmx128m -Dfile.encoding=UTF-8 -jar tale-1.3.0-alpha1.jar >tale.log &`
-		cmd := exec.Command("/bin/sh", "-c", `nohup java -Xms128m -Xmx128m -Dfile.encoding=UTF-8 -jar `+jarFileName+` >tale.log &`)
+		cmd := exec.Command("/bin/sh", "-c", `nohup java -Xms128m -Xmx128m -Dfile.encoding=UTF-8 -jar `+jarFileName+` >/dev/null &`)
 		cmd.Dir = "."
 		// 重定向标准输出到文件
 		stdout, err := os.OpenFile("tale.log", os.O_CREATE|os.O_WRONLY, 0600)
@@ -114,7 +114,7 @@ func doStop(ctx *cli.Context) {
 
 // tail -f tale.log
 func tailLog() {
-	cmd := exec.Command("tail", "-f", "tale.log")
+	cmd := exec.Command("tail", "-f", "logs/tale.log")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
