@@ -7,7 +7,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"syscall"
 )
 
 const (
@@ -17,9 +16,26 @@ const (
 
 // StartAction 启动 tale 博客
 func StartAction() error {
+	dat, err := ioutil.ReadFile(pidFile)
+	if err == nil {
+		pid := strings.TrimSpace(string(dat))
+		if pid != "" {
+			pidInt, err := strconv.Atoi(strings.TrimSpace(string(dat)))
+			if err != nil {
+				return err
+			}
+			_, err = os.FindProcess(pidInt)
+			if err != nil {
+				return nil
+			}
+			log.Println("博客已经启动成功，请停止后重启.")
+			return nil
+		}
+	}
+
 	os.Remove(pidFile)
 	shell := "nohup java -Xms256m -Xmx256m -Dfile.encoding=UTF-8 -jar tale-letast.jar > /dev/null 2>&1 & echo $! > " + pidFile
-	_, _, _, err := StartCmd(shell)
+	_, _, _, err = StartCmd(shell)
 	if err != nil {
 		return err
 	}
@@ -40,12 +56,7 @@ func StopAction() error {
 	if err != nil {
 		return err
 	}
-	err = syscall.Kill(pid, syscall.Signal(2))
-	// _, err = KillPID(pid)
-	if err != nil {
-		log.Println("err", err)
-		return err
-	}
+	KillPID(pid)
 	err = os.Remove(pidFile)
 	if err != nil {
 		return err
