@@ -31,7 +31,8 @@ func StartAction() error {
 func StopAction() error {
 	dat, err := ioutil.ReadFile(pidFile)
 	if err != nil {
-		return err
+		log.Println("博客程序已经停止")
+		return nil
 	}
 	log.Println("pid:", strings.TrimSpace(string(dat)))
 
@@ -64,10 +65,6 @@ func RestartAction() error {
 
 // StatusAction 查看博客运行状态
 func StatusAction() error {
-	// if _, err := os.Stat(pidFile); os.IsNotExist(err) {
-	// 	log.Panicln("博客已经停止运行")
-	// 	return nil
-	// }
 	dat, err := ioutil.ReadFile(pidFile)
 	if err != nil {
 		log.Println("博客已经停止运行")
@@ -96,9 +93,9 @@ func LogAction() error {
 	if err != nil {
 		return err
 	}
-	io.Copy(os.Stderr, stderr)
-	io.Copy(os.Stdout, stdout)
-	return nil
+	go io.Copy(os.Stdout, stdout)
+	go io.Copy(os.Stderr, stderr)
+	select {}
 }
 
 // UpgradeAction 升级博客
