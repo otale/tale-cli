@@ -16,17 +16,17 @@ Github: https://github.com/otale/tale`
 func main() {
 	bin := comandante.New("tale-cli", banner)
 
-	// list command
 	startCmd := comandante.NewCommand("start", "启动 Tale 博客", cmds.StartAction)
 	bin.RegisterCommand(startCmd)
 
-	// list command
 	stopCmd := comandante.NewCommand("stop", "停止 Tale 博客", cmds.StopAction)
 	bin.RegisterCommand(stopCmd)
 
-	// list command
 	restartCmd := comandante.NewCommand("restart", "重启 Tale 博客", cmds.RestartAction)
 	bin.RegisterCommand(restartCmd)
+
+	statusCmd := comandante.NewCommand("status", "查看 Tale 博客运行状态", cmds.StatusAction)
+	bin.RegisterCommand(statusCmd)
 
 	logCmd := comandante.NewCommand("log", "查看 Tale 博客日志", cmds.LogAction)
 	bin.RegisterCommand(logCmd)
