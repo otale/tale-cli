@@ -17,6 +17,11 @@ const (
 	jarFileName     = "tale-least.jar"
 )
 
+type Config struct {
+	key string
+	value string
+}
+
 func main() {
 
 	app := cli.NewApp()
@@ -187,4 +192,8 @@ func findPid() int {
 	}
 	intVal, _ := strconv.Atoi(pid)
 	return intVal
+}
+
+func getFileNmae() (string, error)  {
+	return "", nil
 }
