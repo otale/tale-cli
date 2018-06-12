@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -136,7 +137,7 @@ func UpgradeAction() error {
 			updated = true
 		}
 	}
-	log.Println("ver:", ver)
+
 	if updated {
 		log.Println("修复 SQL")
 		cmd1 := "sqlite3 " + dbFile + " \"update t_comments set type = 'comment', status = 'approved';\""
@@ -161,6 +162,7 @@ func UpgradeAction() error {
 			log.Println("修复 SQL 失败")
 			return err
 		}
+		log.Println(cmd4)
 		_, _, _, err = StartCmd(cmd4)
 		if err != nil {
 			log.Println("修复 SQL 失败")
@@ -176,28 +178,46 @@ func UpgradeAction() error {
 	}
 	log.Println(version)
 
-	// download leate zip
+	if ver != "" {
+		verInt, _ := strconv.Atoi(ver)
+		leteatVer, _ := strconv.Atoi(version.PublishTime)
+		if verInt >= leteatVer {
+			log.Println("您的版本已经是最新，无需升级 :)")
+			return nil
+		}
+	}
 
-	// unzip
-	// backup
+	log.Println("最新版本:", version.LatestVersion)
+
+	// 下载新文件
+	newZipName := DownloadFile(version.DownloadURL, "./")
+
+	// 备份
 	datetime := time.Now().Format("20060102_150405") + ".zip"
 	err := archiver.Zip.Make(datetime, []string{"resources", "lib", "tale-least.jar"})
 	if err != nil {
 		log.Println("备份失败")
 		return err
 	}
-	// delete old
-	os.Remove("tale-least.jar")
+	// 删除旧文件
+	_ = os.Remove("tale-latest.jar")
+	_ = os.Remove("tale-least.jar")
 	RemoveDir("lib")
 	RemoveDir("resources/static")
 	RemoveDir("resources/templates")
-	// move new
-	err = archiver.Zip.Open("/Users/biezhi/workspace/golang/src/github.com/otale/tale-cli/tale-2.0.1.zip", "/Users/biezhi/workspace/temp/tale.biezhi.me")
+
+	// 解压新文件
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
-		log.Println("解压失败")
+		return err
+	}
+	err = archiver.Zip.Open(newZipName, dir)
+	if err != nil {
+		log.Println("解压 " + newZipName + " 失败")
 		return err
 	}
 	log.Println("升级完毕")
+	_ = os.Remove(newZipName)
 	return nil
 }
 

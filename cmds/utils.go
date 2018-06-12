@@ -1,13 +1,20 @@
 package cmds
 
 import (
+	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
+	"strconv"
 	"syscall"
+
+	"github.com/mitchellh/ioprogress"
 )
 
 // GetRequestBody http get body
@@ -65,4 +72,57 @@ func RemoveDir(dir string) error {
 		}
 	}
 	return nil
+}
+
+// DownloadFile 下载文件，带进度
+func DownloadFile(url, dest string) string {
+	file := path.Base(url)
+
+	log.Printf("从 %s 下载 %s\n", url, file)
+
+	var path bytes.Buffer
+	path.WriteString(dest)
+	path.WriteString("/")
+	path.WriteString(file)
+
+	out, err := os.Create(path.String())
+	if err != nil {
+		fmt.Println(path.String())
+		panic(err)
+	}
+
+	defer out.Close()
+
+	headResp, err := http.Head(url)
+	if err != nil {
+		panic(err)
+	}
+
+	defer headResp.Body.Close()
+	size, err := strconv.Atoi(headResp.Header.Get("Content-Length"))
+	if err != nil {
+		panic(err)
+	}
+	resp, err := http.Get(url)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer resp.Body.Close()
+	bar := ioprogress.DrawTextFormatBar(20)
+	progressR := &ioprogress.Reader{
+		Reader: resp.Body,
+		Size:   int64(size),
+		DrawFunc: ioprogress.DrawTerminalf(os.Stdout, func(progress, total int64) string {
+			return fmt.Sprintf(
+				"正在下载: %s %s",
+				bar(progress, total),
+				ioprogress.DrawTextFormatBytes(progress, total))
+		}),
+	}
+
+	io.Copy(out, progressR)
+
+	return file
 }
