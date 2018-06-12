@@ -2,6 +2,7 @@ package cmds
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -11,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/biezhi/moe"
 	"github.com/mholt/archiver"
 )
 
@@ -170,14 +172,15 @@ func UpgradeAction() error {
 		}
 	}
 
+	moe := moe.New("下载最新版本信息").Start()
 	var version Version
 	body := GetRequestBody(statusURL)
+	moe.Stop()
 	if err := json.Unmarshal(body, &version); err != nil {
 		log.Println("解析JSON失败")
 		return err
 	}
-	log.Println(version)
-
+	
 	if ver != "" {
 		verInt, _ := strconv.Atoi(ver)
 		leteatVer, _ := strconv.Atoi(version.PublishTime)
@@ -193,10 +196,8 @@ func UpgradeAction() error {
 	newZipName := DownloadFile(version.DownloadURL, "./")
 
 	// 备份
-	datetime := time.Now().Format("20060102_150405") + ".zip"
-	err := archiver.Zip.Make(datetime, []string{"resources", "lib", "tale-least.jar"})
+	err := BackupAction()
 	if err != nil {
-		log.Println("备份失败")
 		return err
 	}
 	// 删除旧文件
@@ -223,12 +224,23 @@ func UpgradeAction() error {
 
 // BackupAction 备份博客，SQL和当前全部状态
 func BackupAction() error {
-	// 备份 SQL
-	_, _, _, err := StartCmd("sqlite3 tale.db .dump > tale.sql")
+	// 备份目录
+	zipFile := fmt.Sprintf("backup_%s.zip", time.Now().Format("20060102_150405"))
+	files := []string{"resources", "lib"}
+
+	if _, err := os.Stat("tale-least.jar"); err == nil {
+		files = append(files, "tale-least.jar")
+	}
+
+	if _, err := os.Stat("tale-latest.jar"); err == nil {
+		files = append(files, "tale-latest.jar")
+	}
+
+	err := archiver.Zip.Make(zipFile, files)
 	if err != nil {
+		log.Println("备份失败")
 		return err
 	}
-	// 备份目录
-
+	log.Println("备份成功:", zipFile)
 	return nil
 }
