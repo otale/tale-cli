@@ -16,7 +16,7 @@ tale命令行帮助程序 🌟
 
 ## 预览
 
-[![tale-cli](https://i.loli.net/2017/09/10/59b5241331c47.png)](https://asciinema.org/a/137112)
+[![tale-cli](https://wx3.sinaimg.cn/large/0079jBTLgy1fs8x1zwwwgj31j60wa7co.jpg)](https://asciinema.org/a/186825)
 
 ## 安装
 
