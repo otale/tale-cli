@@ -1,18 +1,33 @@
 package cmds
 
 import (
+	"encoding/json"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
 	"strings"
+	"time"
+
+	"github.com/mholt/archiver"
 )
 
 const (
-	statusURL = "https://otale.github.io/status/version.json"
-	pidFile   = "tale.pid"
+	statusURL   = "https://otale.github.io/status/version.json"
+	pidFile     = "tale.pid"
+	dbFile      = "resources/tale.db"
+	versionFile = "version.txt"
 )
+
+// Version tale版本信息
+type Version struct {
+	LatestVersion string   `json:"latest_version"`
+	PublishTime   string   `json:"publish_time"`
+	Hash          string   `json:"hash"`
+	ChangeLogs    []string `json:"change_logs"`
+	DownloadURL   string   `json:"download_url"`
+}
 
 // StartAction 启动 tale 博客
 func StartAction() error {
@@ -111,10 +126,89 @@ func LogAction() error {
 
 // UpgradeAction 升级博客
 func UpgradeAction() error {
+	updated := false
+	var ver string
+	if _, err := os.Stat(versionFile); err == nil {
+		data, _ := ioutil.ReadFile(versionFile)
+		ver = string(data)
+	} else {
+		if _, err := os.Stat(dbFile); err == nil {
+			updated = true
+		}
+	}
+	log.Println("ver:", ver)
+	if updated {
+		log.Println("修复 SQL")
+		cmd1 := "sqlite3 " + dbFile + " \"update t_comments set type = 'comment', status = 'approved';\""
+		cmd2 := "sqlite3 " + dbFile + " \"update t_contents set categories = '默认分类' where categories is null;\""
+		cmd3 := "sqlite3 " + dbFile + " \"update t_contents set allow_feed = 1 where allow_feed is null;\""
+		cmd4 := "sqlite3 " + dbFile + " \"insert into t_options(name,value,description) values ('allow_comment_audit', 'true', '评论需要审核');\""
+		log.Println(cmd1)
+		_, _, _, err := StartCmd(cmd1)
+		if err != nil {
+			log.Println("修复 SQL 失败")
+			return err
+		}
+		log.Println(cmd2)
+		_, _, _, err = StartCmd(cmd2)
+		if err != nil {
+			log.Println("修复 SQL 失败")
+			return err
+		}
+		log.Println(cmd3)
+		_, _, _, err = StartCmd(cmd3)
+		if err != nil {
+			log.Println("修复 SQL 失败")
+			return err
+		}
+		_, _, _, err = StartCmd(cmd4)
+		if err != nil {
+			log.Println("修复 SQL 失败")
+			return err
+		}
+	}
+
+	var version Version
+	body := GetRequestBody(statusURL)
+	if err := json.Unmarshal(body, &version); err != nil {
+		log.Println("解析JSON失败")
+		return err
+	}
+	log.Println(version)
+
+	// download leate zip
+
+	// unzip
+	// backup
+	datetime := time.Now().Format("20060102_150405") + ".zip"
+	err := archiver.Zip.Make(datetime, []string{"resources", "lib", "tale-least.jar"})
+	if err != nil {
+		log.Println("备份失败")
+		return err
+	}
+	// delete old
+	os.Remove("tale-least.jar")
+	RemoveDir("lib")
+	RemoveDir("resources/static")
+	RemoveDir("resources/templates")
+	// move new
+	err = archiver.Zip.Open("/Users/biezhi/workspace/golang/src/github.com/otale/tale-cli/tale-2.0.1.zip", "/Users/biezhi/workspace/temp/tale.biezhi.me")
+	if err != nil {
+		log.Println("解压失败")
+		return err
+	}
+	log.Println("升级完毕")
 	return nil
 }
 
 // BackupAction 备份博客，SQL和当前全部状态
 func BackupAction() error {
+	// 备份 SQL
+	_, _, _, err := StartCmd("sqlite3 tale.db .dump > tale.sql")
+	if err != nil {
+		return err
+	}
+	// 备份目录
+
 	return nil
 }

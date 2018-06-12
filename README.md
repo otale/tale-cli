@@ -7,6 +7,13 @@ tale命令行帮助程序 🌟
 [![Go Report Card](https://goreportcard.com/badge/github.com/otale/tale-cli)](https://goreportcard.com/report/github.com/otale/tale-cli)
 [![GoDoc](https://godoc.org/github.com/otale/tale-cli?status.svg)](https://godoc.org/github.com/otale/tale-cli)
 
+## 特性
+
+- 支持启动、停止、升级 Tale 博客
+- 支持 Linux、MacOSX 系统
+- 支持旧版本迁移
+- 支持博客备份
+
 ## 预览
 
 [![tale-cli](https://i.loli.net/2017/09/10/59b5241331c47.png)](https://asciinema.org/a/137112)
