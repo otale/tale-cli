@@ -52,7 +52,7 @@ func StartAction() error {
 	}
 
 	os.Remove(pidFile)
-	shell := "nohup java -Xms256m -Xmx256m -Dfile.encoding=UTF-8 -jar tale-letast.jar > /dev/null 2>&1 & echo $! > " + pidFile
+	shell := "nohup java -Xms256m -Xmx256m -Dfile.encoding=UTF-8 -jar tale-latest.jar > /dev/null 2>&1 & echo $! > " + pidFile
 	_, _, _, err = StartCmd(shell)
 	if err != nil {
 		return err
@@ -180,7 +180,7 @@ func UpgradeAction() error {
 		log.Println("解析JSON失败")
 		return err
 	}
-	
+
 	if ver != "" {
 		verInt, _ := strconv.Atoi(ver)
 		leteatVer, _ := strconv.Atoi(version.PublishTime)
